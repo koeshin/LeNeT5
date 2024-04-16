@@ -38,15 +38,17 @@ class MNIST(Dataset):
         if augment==False:
             self.transform = transforms.Compose([
                 transforms.ToPILImage(),
-                transforms.ToTensor(),
+                transforms.ToTensor(),  # 데이터를 0에서 1사이로 변환해줌.
                 transforms.Normalize((0.1307,), (0.3081,))  # MNIST 데이터의 평균과 표준편차
             ])
         else:
-            self.transform = transforms.Compose([
+            self.transform = transforms.Compose([   # agument 추가 하지만 성능이 낮아져서 사용 안함.
             transforms.ToPILImage(),
-            transforms.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1)),  # 무작위 회전 및 평행 이동, 스케일 조정
+            transforms.RandomRotation(degrees=15),
+            transforms.RandomResizedCrop(28, scale=(0.8, 1.0), ratio=(0.75, 1.33)),
+            transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
-            transforms.Normalize((0.1307,), (0.3081,))  # MNIST 데이터의 평균과 표준편차로 정규화
+            transforms.Normalize((0.1307,), (0.3081,))
         ])
         
     def __len__(self):

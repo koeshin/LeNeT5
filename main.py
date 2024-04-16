@@ -12,6 +12,7 @@ import dataset
 from model import LeNet5, CustomMLP,LeNet5_normalize
 import numpy as np
 import torch.nn.functional as F
+
 def train(model, trn_loader, device, criterion, optimizer):
     """ Train function
 
@@ -130,23 +131,27 @@ def main():
         5) cost function: use torch.nn.CrossEntropyLoss
 
     """
+    epochs = 10  # 훈련할 에폭 수
     # Settings
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    train_dataset = dataset.MNIST(data_dir='../data/train')
-    test_dataset = dataset.MNIST(data_dir='../data/test')
+    train_dataset = dataset.MNIST(data_dir='../data/train',augment=False)
+    test_dataset = dataset.MNIST(data_dir='../data/test',augment=False)
 
     # DataLoader
     trn_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
     tst_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
     
     # print("###################### LeNet5 #####################")
-    epochs = 10  # 훈련할 에폭 수
         # Dataset
     # Model LeNet5
     model = LeNet5().to(device)  # Change to CustomMLP() if you want to use the MLP model instead
+    # Calculate the number of parameters for each layer
+    params_per_layer = {name: p.numel() for name, p in model.named_parameters()}
+
+
 
     # Optimizer
-    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimizer = optim.SGD(model.parameters(), lr=0.01,momentum=0.9)
 
     # Loss function
     criterion = nn.CrossEntropyLoss()
@@ -155,7 +160,7 @@ def main():
     LeNet_train_avg_acc=[]
     LeNet_test_avg_loss = []
     LeNet_test_avg_acc=[]
-    for epoch in range(epochs):
+    for epoch in range(epochs): # tracking training processes
         # Training and Testing
         train_loss, train_accuracy = train(model, trn_loader, device, criterion, optimizer)
         LeNet_train_avg_loss.append(train_loss)
@@ -171,7 +176,7 @@ def main():
     test_avg_loss=np.mean(LeNet_test_avg_loss)
     test_avg_acc=np.mean(LeNet_test_avg_acc)
     print(f"Train_avg_Loss:{train_avg_loss:.4f},Train_avg_Accuracy:{train_avg_acc:.2f},Test_avg_Loss:{test_avg_loss:.4f},Test_avg_Accuracy:{test_avg_acc:.2f}%",flush=True)
-    
+    plot_training_statistics(LeNet_train_avg_loss,LeNet_train_avg_acc,LeNet_test_avg_loss,LeNet_test_avg_acc,"LeNet5_plot_epoch=10")
 
     # write your codes here
     print("###################### Custom MLP #####################")
@@ -187,8 +192,8 @@ def main():
     CustomMLP_train_avg_acc=[]
     CustomMLP_test_avg_loss = []
     CustomMLP_test_avg_acc=[]
-    for epoch in range(epochs):
-    # Training and Testing
+    for epoch in range(epochs):  # tracking training processes
+    # Training and Testing  
         train_loss, train_accuracy = train(model2, trn_loader, device, criterion, optimizer)
         CustomMLP_train_avg_loss.append(train_loss)
         CustomMLP_train_avg_acc.append(train_accuracy)
@@ -205,9 +210,7 @@ def main():
     test_avg_acc=np.mean(CustomMLP_test_avg_acc)
     print(f"Train_avg_Loss:{train_avg_loss:.4f},Train_avg_Accuracy:{train_avg_acc:.2f},Test_avg_Loss:{test_avg_loss:.4f},Test_avg_Accuracy:{test_avg_acc:.2f}%",flush=True)
     
-    
-    # plot_training_statistics(LeNet_train_avg_loss,LeNet_train_avg_acc,LeNet_test_avg_loss,LeNet_test_avg_acc,"LeNet5_normalize_plot_epoch=10")
-    # print(CustomMLP_train_avg_loss)
+    # make plot
     plot_training_statistics(CustomMLP_train_avg_loss,CustomMLP_train_avg_acc,CustomMLP_test_avg_loss,CustomMLP_test_avg_acc,"CustumMLP_plot_epoch=10")
 
 def main2():
@@ -222,22 +225,27 @@ def main2():
 
     """
     # Settings
+    epochs = 20  # 훈련할 에폭 수
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    train_dataset = dataset.MNIST(data_dir='../data/train',augment=True)
+    train_dataset = dataset.MNIST(data_dir='../data/train',augment=False)
     test_dataset = dataset.MNIST(data_dir='../data/test',augment=False)
 
     # DataLoader
-    trn_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-    tst_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
+    trn_loader = DataLoader(train_dataset, batch_size=256, shuffle=True)  
+    tst_loader = DataLoader(test_dataset, batch_size=256, shuffle=False)
     
     # print("###################### LeNet5 #####################")
-    epochs = 10  # 훈련할 에폭 수
         # Dataset
     # Model LeNet5
-    model = LeNet5().to(device)  # Change to CustomMLP() if you want to use the MLP model instead
+    model = LeNet5_normalize().to(device) 
 
     # Optimizer
-    optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9)
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)  # optimize change + weight_decay(L2 Regularization)
+
+
+    
+
 
     # Loss function
     criterion = nn.CrossEntropyLoss()
@@ -246,7 +254,7 @@ def main2():
     LeNet_train_avg_acc=[]
     LeNet_test_avg_loss = []
     LeNet_test_avg_acc=[]
-    for epoch in range(epochs):
+    for epoch in range(epochs):  # tracking training processes
         # Training and Testing
         train_loss, train_accuracy = train(model, trn_loader, device, criterion, optimizer)
         LeNet_train_avg_loss.append(train_loss)
@@ -263,7 +271,8 @@ def main2():
     test_avg_acc=np.mean(LeNet_test_avg_acc)
     print(f"Train_avg_Loss:{train_avg_loss:.4f},Train_avg_Accuracy:{train_avg_acc:.2f},Test_avg_Loss:{test_avg_loss:.4f},Test_avg_Accuracy:{test_avg_acc:.2f}%",flush=True)
 
-    plot_training_statistics(LeNet_train_avg_loss,LeNet_train_avg_acc,LeNet_test_avg_loss,LeNet_test_avg_acc,"LeNet5_normalize_plot_epoch=10")
+    #make plot
+    plot_training_statistics(LeNet_train_avg_loss,LeNet_train_avg_acc,LeNet_test_avg_loss,LeNet_test_avg_acc,"LeNet5_batch_256_drop_0.8.png")
 
 if __name__ == '__main__':
     # main()
