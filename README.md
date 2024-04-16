@@ -52,5 +52,5 @@ LeNet-5 논문 링크 http://vision.stanford.edu/cs598_spring07/papers/Lecun98.
 논문에 제시된 minst 데이터에 대한 error rate 그래프와 내가 짠 LeNet-5의 loss 그래프와 유사함. 또한, 실험 결과에서 테스트 데이터에 대한 오류율은 1.9%, 훈련 데이터에 대한 오류율을 1.1%에 수렴한다고 했으므로 내가 만든 LeNet-5와 유사함.(논문에서는 모델의 구성이 조금 다름)
 
 **4. LeNet-5 모델 개선**
-
-모델 개선은 Dropout,BatchNormalize, optimizer를 Adam으로 변경 + weight_decay 추가(L2 regularization)을 하여 모델의 성능을 개선함. epoch=20으로 설정, Dropout 비율과 batch_size를 변경해 가면서 실험
+![better_LeNet](LeNet5_dropout_0.8_batch_64.png)
+모델 개선은 Dropout,BatchNormalize, optimizer를 Adam으로 변경 + weight_decay 추가(L2 regularization)을 하여 모델의 성능을 개선함. epoch=20으로 설정, Dropout=0.8 batch_size=68,optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
