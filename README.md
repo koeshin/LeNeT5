@@ -45,6 +45,8 @@ LeNet-5 모델과 CustomMLP모델 모두 epoch=10
 ![CustomMLP_그림](CustumMLP.png)
 **성능 평균=Train_avg_Loss:0.0772,Train_avg_Accuracy:97.65,Test_avg_Loss:0.0865,Test_avg_Accuracy:97.30%**
 
+**성능 평균은 모든 면에서 LeNet이 더 좋은 것을 알 수 있음.**
+
 **3. 알려진 LeNet-5 정확도**
 
 LeNet-5 논문 링크 http://vision.stanford.edu/cs598_spring07/papers/Lecun98.pdf
