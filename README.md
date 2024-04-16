@@ -37,11 +37,12 @@ MLP 모델이 LeNet-5와 비슷한 파라미터 수를 갖기 위해, 레이어�
 LeNet-5 모델과 CustomMLP모델 모두 epoch=10
 
 **LeNet-5 모델 성능(test_LeNet5_CustomMLP.txt에서 확인 가능)**
+![LeNet_그림](LeNet5_plot.png)
 
 Train_avg_Loss:0.0552,Train_avg_Accuracy:98.23,Test_avg_Loss:0.0424,Test_avg_Accuracy:98.62%
 
 **CustomMLP 모델 성능(test_LeNet5_CustomMLP.txt에서 확인 가능)**
-
+![CustomMLP_그림](CustumMLP.png)
 **Train_avg_Loss:0.0772,Train_avg_Accuracy:97.65,Test_avg_Loss:0.0865,Test_avg_Accuracy:97.30%**
 
 **3. 알려진 LeNet-5 정확도**
